@@ -20,6 +20,7 @@ struct TestModel {
 
 struct  CityDetailView: View {
     let city:CityAPI.City
+   
     @ObservedObject var detail:CityDetailControl
     var body: some View {
         
@@ -29,6 +30,8 @@ struct  CityDetailView: View {
         Text("进度\(detail.progress)")
         Image.init(uiImage: detail.image ?? UIImage()).frame( width:300*detail.progress,height: 100, alignment: Alignment.center).clipped()
         
+            
+            
         ForEach.init([city.name,city.city,city.country,city.zip].map {
             return TestModel.init(name: $0)
         }, id: \.id) {
