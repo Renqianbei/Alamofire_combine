@@ -21,7 +21,6 @@ class CityAPI {
     }
     
 
-//MARK:内部sink
    static func citys(success:@escaping ([City]?)->(),failed:@escaping (HYNetError?)->())  {
         
     let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
@@ -32,7 +31,7 @@ class CityAPI {
         case let .success(model):
             success(model.data)
         case let .failure(af):
-            failed(HYNetError.AFError(af))
+            failed(HYNetError.init(afError: af))
         }
     }
     
