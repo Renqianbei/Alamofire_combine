@@ -1,0 +1,167 @@
+//
+//  FirstCombine.swift
+//  Combine_Alamofire
+//
+//  Created by 任前辈 on 2020/8/19.
+//  Copyright © 2020 任前辈. All rights reserved.
+//
+import Combine
+import Foundation
+import Alamofire
+class CityAPI {
+    
+    
+    
+    struct City:MYQuickCodableProtocol {        
+        let name:String
+        let city:String
+        let country:String
+        let zip:String
+        
+    }
+    
+
+//MARK:内部sink
+   static func citys(success:@escaping ([City]?)->(),failed:@escaping (HYNetError?)->()) -> AnyCancellable {
+        
+       return cityPublisher().sink(receiveCompletion: { (result) in
+            switch result {
+                case .finished:
+                    failed(nil)
+                case let .failure(error):
+                    failed(error)
+            }
+        }) { (citys) in
+            success(citys)
+        }
+        
+    }
+    
+   static func citysNever(completetion:@escaping(Result<[City]?,HYNetError>)->()) -> AnyCancellable {
+        
+       return cityPublisherNever().sink(receiveValue: completetion)
+    }
+    
+    
+    
+    
+//MARK:返回publisher
+    
+   //MARK:1.带错误
+   static func cityPublisher() -> AnyPublisher<[City]?,HYNetError> {
+    
+        let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
+        let soul = HyRequestSoul.init(url: url)
+        return HYRequest.shared.requestPublish(requestConvert: soul, serializer: City.arrayCodableSerializer)
+   
+    }
+    
+    
+   //MARK:2.不带错误，建议方式
+   static func cityPublisherNever() -> AnyPublisher<Result<[City]?,HYNetError>,Never> {
+       
+    let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
+    
+        
+    
+    
+    let soul = HyRequestSoul.init(url: url) {  (  request :inout URLRequest) in
+//        request.url = URL.init(string: "")
+//        request.cachePolicy = .returnCacheDataElseLoad
+//        request.addValue("W/\"8d0-0s0jbzDFKTohM9A3TYDNDK/LBGY\"", forHTTPHeaderField: "If-None-Match")
+//        request.addValue("xxxxx", forHTTPHeaderField: "If-None-Match")
+    }
+    
+//    soul.parameters = ["hello":["2","3","4"],"w":true]
+//
+//    soul.encoding = URLEncoding.init(destination: URLEncoding.Destination.methodDependent, arrayEncoding: URLEncoding.ArrayEncoding.brackets, boolEncoding: URLEncoding.BoolEncoding.numeric)
+//
+//    let s = try? soul.asURLRequest().url?.absoluteString
+//    print(s)
+    
+    
+    //自定义adapter和retry
+    let customcepter = Interceptor.init(adaptHandler: { (request, session, adapt) in
+        adapt(.success(request))
+    }) { (request, session, error, retry) in
+        print(error)
+        retry(.doNotRetry)
+    }
+    
+    
+    let dr = HYRequest.shared.request(soul,interceptor: customcepter)
+    
+    //缓存测试
+    dr.cacheResponse(using: ResponseCacher.init(behavior: .modify({ (task, oCache) -> CachedURLResponse? in
+        return oCache
+        /*
+        let response = oCache.response as! HTTPURLResponse
+        var headers = response.allHeaderFields as! [String:String]
+            headers["Cache Control"] = "max-age=10"
+            print(headers["Etag"] ?? "")
+        let newHttpResponse = HTTPURLResponse.init(url: response.url!, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: headers)
+
+        let cacherRp = CachedURLResponse.init(response: newHttpResponse!, data: testValue.data(using: String.Encoding.utf8)!)
+
+         return cacherRp
+         */
+    })))
+        
+    
+    
+    return HYRequest.shared.requestPublish(request: dr, serializer: City.arrayCodableSerializer)
+            
+    
+    }
+    
+    
+    
+    
+    //MARK:3.下载图片 带进度示例
+    static func  cityPic(progressPublish:@escaping (AnyPublisher<CGFloat,Never>)->(),picPublish:(AnyPublisher<Result<Data,HYNetError>,Never>)->()) {
+        
+        let soul = HyRequestSoul.init(url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598509173076&di=e12fa01f8157cc9114ccf951e13e2ef6&imgtype=0&src=http%3A%2F%2Fpic.rmb.bdstatic.com%2Fe2ebeb9c8c47d1a31de42756c54d7ac8.jpeg") {   (request: inout URLRequest) in
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+        
+        let pPublish = PassthroughSubject<CGFloat,Never>.init()
+       
+        let dr = HYRequest.shared.request(soul).downloadProgress { progress in
+                print( "当前\(progress.completedUnitCount)")
+                print("总共\(progress.totalUnitCount)")
+                
+                let value = CGFloat(progress.completedUnitCount)/CGFloat(progress.totalUnitCount)
+                pPublish.send(value)
+
+                if progress.isFinished {
+                    print("结束\(progress.totalUnitCount)")
+                    pPublish.send(completion: .finished)
+                }
+        }
+        
+        progressPublish(pPublish.eraseToAnyPublisher())
+        
+        picPublish(HYRequest.shared.requestPublish(request: dr, serializer: HYNetSerializer<Data>()))
+    }
+    
+    
+    
+    
+    
+}
+
+
+let testValue:String = """
+{
+"code": 200,
+"msg": "成功",
+"data": [
+  {
+    "name": "青海省",
+    "city": "安徽省 芜湖市",
+    "country": "四川省 达州市 开江县",
+    "zip": "174432"
+  }
+        ]
+}
+"""

@@ -1,0 +1,93 @@
+//
+//  HYNetCommonResult.swift
+//  Combine_Alamofire
+//
+//  Created by 任前辈 on 2020/8/21.
+//  Copyright © 2020 任前辈. All rights reserved.
+//
+
+import Foundation
+
+//MARK:不解析
+extension Data:HyCodeExplain,HyDecodeSerializer {
+
+    static func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?) throws -> Self {
+        guard let _data = data else {
+            throw HYNetError.decode(.emptyData(request: request?.url?.absoluteString))
+        }
+        return _data
+        
+    }
+        
+    var result: Result<Self, HYNetError> {
+        return .success(self)
+    }
+    
+}
+
+
+//MARK:Codable 通用层类型
+class NetCommonCodableResult<T:Codable>:Codable {
+    var code:Int = 0
+    var msg:String = ""
+    var data:T?
+    var ___requestUrlString:String?
+    
+}
+
+extension NetCommonCodableResult:HyCodeExplain{
+    
+    var result: Result<T?, HYNetError>{
+        if code == 200 {
+            return .success(data)
+        }else {
+            if ___requestUrlString?.hasPrefix("特定地址") ?? false {
+                return .failure(HYNetError.ResultError("特定地址 code\(code) 不对"))
+            }else{
+                return .failure(HYNetError.ResultError(" code\(code) 不对"))
+            }
+        }
+    }
+}
+
+extension NetCommonCodableResult:HyDecodeSerializer {
+
+       static func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?) throws -> Self {
+           
+        
+        guard let _data = data else {
+            throw HYNetError.decode(.emptyData(request: request?.url?.absoluteString))
+        }
+                
+        let decode = JSONDecoder.init()
+        do {
+            let value = try decode.decode(self, from: _data)
+            value.___requestUrlString = request?.url?.absoluteString
+            return value
+        } catch  {
+            throw HYNetError.decode(.failed(request:request?.url?.absoluteString,data:_data,error:error))
+        }
+       
+        
+    }
+}
+
+
+
+//MARK:quick get 通用解析器
+
+protocol MYQuickCodableProtocol:Codable {
+    static var codableSerializer:HYNetSerializer<NetCommonCodableResult<Self>> {get}
+    static var arrayCodableSerializer:HYNetSerializer<NetCommonCodableResult<[Self]>> {get}
+}
+
+extension MYQuickCodableProtocol {
+    static var codableSerializer:HYNetSerializer<NetCommonCodableResult<Self>> {
+        return HYNetSerializer<NetCommonCodableResult<Self>>()
+    }
+    static var arrayCodableSerializer:HYNetSerializer<NetCommonCodableResult<[Self]>> {
+        return HYNetSerializer<NetCommonCodableResult<[Self]>>()
+    }
+
+
+}
