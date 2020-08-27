@@ -22,24 +22,37 @@ class CityAPI {
     
 
 //MARK:内部sink
-   static func citys(success:@escaping ([City]?)->(),failed:@escaping (HYNetError?)->()) -> AnyCancellable {
+   static func citys(success:@escaping ([City]?)->(),failed:@escaping (HYNetError?)->())  {
         
-       return cityPublisher().sink(receiveCompletion: { (result) in
-            switch result {
-                case .finished:
-                    failed(nil)
-                case let .failure(error):
-                    failed(error)
-            }
-        }) { (citys) in
-            success(citys)
+    let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
+    let spark = HYRequestSpark.init(url: url)
+    let dataRequest = HYRequest.shared.request(spark).response(responseSerializer: City.arrayCodableSerializer) {
+        response in
+        switch response.result {
+        case let .success(model):
+            success(model.data)
+        case let .failure(af):
+            failed(HYNetError.AFError(af))
         }
-        
     }
     
-   static func citysNever(completetion:@escaping(Result<[City]?,HYNetError>)->()) -> AnyCancellable {
+    dataRequest.resume()
+    
+    
+    }
+    
+   static func citysNever(completetion:@escaping(Result<[City]?,HYNetError>)->())  {
         
-       return cityPublisherNever().sink(receiveValue: completetion)
+        let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
+        let spark = HYRequestSpark.init(url: url)
+        let dataRequest = HYRequest.shared.request(spark).response(responseSerializer: City.arrayCodableSerializer) {
+            response in
+            completetion(response.result.map({ $0.data
+            }).mapError(HYNetError.init(afError:)))
+        }
+        
+        dataRequest.resume()
+    
     }
     
     
@@ -51,8 +64,8 @@ class CityAPI {
    static func cityPublisher() -> AnyPublisher<[City]?,HYNetError> {
     
         let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
-        let soul = HyRequestSoul.init(url: url)
-        return HYRequest.shared.requestPublish(requestConvert: soul, serializer: City.arrayCodableSerializer)
+        let spark = HYRequestSpark.init(url: url)
+        return HYRequest.shared.requestPublish(requestConvert: spark, serializer: City.arrayCodableSerializer)
    
     }
     
@@ -62,11 +75,11 @@ class CityAPI {
        
     let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
     
-//    return HYRequest.shared.requestPublish(requestConvert: HyRequestSoul(url: url), serializer: City.arrayCodableSerializer);
+//    return HYRequest.shared.requestPublish(requestConvert: HyRequestSpark(url: url), serializer: City.arrayCodableSerializer);
         
     
     
-    let soul = HyRequestSoul.init(url: url) {  (  request :inout URLRequest) in
+    let spark = HYRequestSpark.init(url: url) {  (  request :inout URLRequest) in
 //        request.url = URL.init(string: "")
 //        request.cachePolicy = .returnCacheDataElseLoad
 //        request.addValue("W/\"8d0-0s0jbzDFKTohM9A3TYDNDK/LBGY\"", forHTTPHeaderField: "If-None-Match")
@@ -90,7 +103,7 @@ class CityAPI {
     }
     
     
-    let dr = HYRequest.shared.request(soul,interceptor: customcepter)
+    let dr = HYRequest.shared.request(spark,interceptor: customcepter)
     
     //缓存测试
     dr.cacheResponse(using: ResponseCacher.init(behavior: .modify({ (task, oCache) -> CachedURLResponse? in
@@ -121,13 +134,13 @@ class CityAPI {
     //MARK:3.下载图片 带进度示例
     static func  cityPic(progressPublish:@escaping (AnyPublisher<CGFloat,Never>)->(),picPublish:(AnyPublisher<Result<Data,HYNetError>,Never>)->()) {
         
-        let soul = HyRequestSoul.init(url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598509173076&di=e12fa01f8157cc9114ccf951e13e2ef6&imgtype=0&src=http%3A%2F%2Fpic.rmb.bdstatic.com%2Fe2ebeb9c8c47d1a31de42756c54d7ac8.jpeg") {   (request: inout URLRequest) in
+        let spark = HYRequestSpark.init(url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598509173076&di=e12fa01f8157cc9114ccf951e13e2ef6&imgtype=0&src=http%3A%2F%2Fpic.rmb.bdstatic.com%2Fe2ebeb9c8c47d1a31de42756c54d7ac8.jpeg") {   (request: inout URLRequest) in
             request.cachePolicy = .reloadIgnoringLocalCacheData
         }
         
         let pPublish = PassthroughSubject<CGFloat,Never>.init()
        
-        let dr = HYRequest.shared.request(soul).downloadProgress { progress in
+        let dr = HYRequest.shared.request(spark).downloadProgress { progress in
                 print( "当前\(progress.completedUnitCount)")
                 print("总共\(progress.totalUnitCount)")
                 

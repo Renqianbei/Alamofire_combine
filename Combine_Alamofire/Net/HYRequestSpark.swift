@@ -9,10 +9,7 @@
 import Foundation
 import Alamofire
 
-
-
-
-struct HyRequestSoul:URLRequestConvertible {
+struct HYRequestSpark:URLRequestConvertible {
    
     let url: URLConvertible
     var method: HTTPMethod = .get
@@ -38,7 +35,7 @@ protocol  HYNetParasMap {
 }
 
 
-extension HyRequestSoul:HYNetParasMap {
+extension HYRequestSpark:HYNetParasMap {
     
     func map(parameters:Parameters) -> Parameters {
         //todo:

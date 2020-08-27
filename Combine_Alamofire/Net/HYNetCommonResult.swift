@@ -8,7 +8,7 @@
 
 import Foundation
 
-//MARK:不解析
+//MARK:不解析类型
 extension Data:HyCodeExplain,HyDecodeSerializer {
 
     static func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?) throws -> Self {
@@ -74,7 +74,7 @@ extension NetCommonCodableResult:HyDecodeSerializer {
 
 
 
-//MARK:quick get 通用解析器
+//MARK:quick get Codable解析器
 
 protocol MYQuickCodableProtocol:Codable {
     static var codableSerializer:HYNetSerializer<NetCommonCodableResult<Self>> {get}
