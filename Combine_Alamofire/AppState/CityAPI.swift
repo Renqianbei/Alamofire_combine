@@ -62,6 +62,7 @@ class CityAPI {
        
     let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
     
+//    return HYRequest.shared.requestPublish(requestConvert: HyRequestSoul(url: url), serializer: City.arrayCodableSerializer);
         
     
     
