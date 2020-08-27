@@ -58,15 +58,7 @@ protocol HyCodeExplain {
     var result:Result<Value, HYNetError> { get }
 }
 
-extension HyCodeExplain {
-    var success:Bool {
-        if  case .success(_) = result {
-            return true
-        }else{
-            return false
-        }
-    }
-}
+
 
 //MARK:解析协议
 protocol HyDecodeSerializer {

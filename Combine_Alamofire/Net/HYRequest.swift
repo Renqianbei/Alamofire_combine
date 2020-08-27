@@ -16,11 +16,13 @@ class HYRequest {
     static let shared:HYRequest = HYRequest()
     let session:Alamofire.Session!
     private init() {
-        
+        //MARK:todo
         let config = URLSessionConfiguration.af.default
 //        config.requestCachePolicy = .useProtocolCachePolicy
         session = Alamofire.Session.init(configuration: config)
     }
+    
+    
     
     //1:Never
     
@@ -74,9 +76,9 @@ class HYRequest {
     
     
     
-    func request(_ requestConvert:URLRequestConvertible, interceptor: RequestInterceptor? = nil) -> DataRequest {
+    func request(_ requestConvert:URLRequestConvertible,customSession:Session? = nil, interceptor: RequestInterceptor? = nil) -> DataRequest {
         
-        let dr =  session.request(requestConvert,interceptor: interceptor).validate(statusCode: 200..<299).validate(contentType: ["application/json","image/jpeg"])
+        let dr =  (customSession ?? session).request(requestConvert,interceptor: interceptor).validate(statusCode: 200..<299).validate(contentType: ["application/json","image/jpeg"])
             
         
         return  dr
