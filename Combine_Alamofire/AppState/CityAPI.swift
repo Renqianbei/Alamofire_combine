@@ -179,9 +179,22 @@ class CityAPI {
     
     
      static func cityPublisherNeverChain() -> AnyPublisher<Result<[City]?,HYNetError>,Never> {
-            let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
-            //1.
-            return HYRequest.shared.requestPublish(requestConvert: spark).mapValueCodable()
+        
+        return HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
+        .fire()
+        .mapValueCodable()
+        
+        
+//        return HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
+//            .dataRequest().downloadProgress { (progress) in
+//            print(progress)
+//            }
+//        .spark()
+//        .mapValueCodable()
+        
+        
+        
+        
     }
     
     

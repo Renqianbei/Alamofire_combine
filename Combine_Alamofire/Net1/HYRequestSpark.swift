@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import Combine
 
 struct HYRequestSpark:URLRequestConvertible {
    
@@ -26,6 +27,28 @@ struct HYRequestSpark:URLRequestConvertible {
     }
     
 }
+
+extension HYRequestSpark {
+    
+    func fire() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+        return HYRequest.shared.requestPublish(requestConvert: self)
+    }
+    
+    func dataRequest() -> DataRequest {
+        return HYRequest.shared.request(self)
+    }
+    
+}
+
+extension DataRequest {
+    
+    func spark() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+        return HYRequest.shared.requestPublish(request: self)
+    }
+}
+
+
+
 
 protocol  HYNetParasMap {
     
