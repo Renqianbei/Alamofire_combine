@@ -11,6 +11,8 @@ import Alamofire
 import Combine
 
 
+
+
 class HYRequest {
         
     static let shared:HYRequest = HYRequest()
@@ -70,13 +72,25 @@ class HYRequest {
         
     }
     
-    func requestPublish(requestConvert:URLRequestConvertible) -> AnyPublisher<Result<Data,HYNetError>,Never> {
+    
+    
+    
+    struct Response {
+        var data:Data
+        var response:URLResponse?
+    }
+    
+    //3:
+    func requestPublish(requestConvert:URLRequestConvertible) -> AnyPublisher<Result<Response,HYNetError>,Never> {
         return requestPublish(request: request(requestConvert))
         
     }
-    func requestPublish(request:DataRequest) -> AnyPublisher<Result<Data,HYNetError>,Never> {
+    
+    
+    func requestPublish(request:DataRequest) -> AnyPublisher<Result<Response,HYNetError>,Never> {
         
-        return request.publishData().result().map { $0.mapError { HYNetError(afError: $0)} }.eraseToAnyPublisher()
+        request.publishData().result().map { $0.map { [weak request] in Response.init(data: $0, response: request?.response) }.mapError({HYNetError.init(afError: $0)})
+        }.eraseToAnyPublisher()
         
     }
     

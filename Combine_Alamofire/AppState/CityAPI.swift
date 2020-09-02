@@ -176,6 +176,15 @@ class CityAPI {
     
 //MARK:Publisher 扩展方式 解析 链式codable测试
     
+    
+    
+     static func cityPublisherNeverChain() -> AnyPublisher<Result<[City]?,HYNetError>,Never> {
+            let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
+            //1.
+            return HYRequest.shared.requestPublish(requestConvert: spark).mapValueCodable()
+    }
+    
+    
     struct CityResultList:Codable,NetCodeMap {
         var _hy_Net_code: Int {
             return code
@@ -191,14 +200,6 @@ class CityAPI {
         var msg:String = ""
         var data:[City]?
     }
-    
-     static func cityPublisherNeverChain() -> AnyPublisher<Result<[City]?,HYNetError>,Never> {
-            let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
-            //1.
-            return HYRequest.shared.requestPublish(requestConvert: spark).mapValueCodable(url: nil)
-    }
-    
-    
     static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CityError>,Never> {
         let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
  

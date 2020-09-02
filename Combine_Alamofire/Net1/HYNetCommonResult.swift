@@ -70,7 +70,7 @@ extension NetCommonCodableResult:HyDecodeSerializer {
             value.___requestUrlString = request?.url?.absoluteString
             return value
         } catch  {
-            throw HYNetError.decode(.failed(request:request?.url?.absoluteString,data:_data,error:error))
+            throw HYNetError.decode(HYNetError.DecodeError.failed(response: HYRequest.Response.init(data: _data, response: response), error: error))
         }
        
         

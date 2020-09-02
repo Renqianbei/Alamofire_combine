@@ -16,14 +16,14 @@ enum HYNetError:Error {
     
     enum DecodeError:Error {
         case emptyData(request: String?)
-        case failed(request: String?,data: Data,error:Error)
+        case failed(response:HYRequest.Response?,error:Error)
         
         var localizedDescription: String {
             switch self {
             case let .emptyData(request):
                 return " request:\(request ?? "") ||| data: 结果为空"
-            case let .failed(request,_,error):
-                return "request:\(request ?? "")||| error:\(error.localizedDescription)"
+            case let .failed(response,error):
+                return "request:\(response?.response?.url?.absoluteString ?? "")||| error:\(error.localizedDescription)"
             }
         }
     }
