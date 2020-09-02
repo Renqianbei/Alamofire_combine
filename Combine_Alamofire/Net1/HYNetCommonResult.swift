@@ -13,7 +13,7 @@ extension Data:HyCodeExplain,HyDecodeSerializer {
 
     static func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?) throws -> Self {
         guard let _data = data else {
-            throw HYNetError.decode(.emptyData(request: request?.url?.absoluteString))
+            throw HYNetError.decode(.emptyData(response:HYRequest.Response.init(response: response)))
         }
         return _data
         
@@ -61,7 +61,7 @@ extension NetCommonCodableResult:HyDecodeSerializer {
            
         
         guard let _data = data else {
-            throw HYNetError.decode(.emptyData(request: request?.url?.absoluteString))
+            throw HYNetError.decode(.emptyData(response: HYRequest.Response.init(response: response)))
         }
                 
         let decode = JSONDecoder.init()

@@ -174,7 +174,7 @@ class CityAPI {
  
     
     
-//MARK:Publisher 扩展方式 解析 链式codable测试
+//MARK:4.Publisher 扩展方式 解析 链式codable测试
     
     
     
@@ -215,7 +215,7 @@ class CityAPI {
                         if cityResult.code == 100010 {
                             return .failure(CityError.custom("hello 错误率"))
                         }else {
-                            return cityResult.mapCode(url: nil).mapError { CityError.custom($0.localizedDescription) }
+                            return cityResult.mapResult(url: nil).mapError { CityError.custom($0.localizedDescription) }
                         }
                     }
             }.eraseToAnyPublisher()

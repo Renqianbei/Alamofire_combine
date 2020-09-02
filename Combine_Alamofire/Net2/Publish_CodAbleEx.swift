@@ -12,14 +12,14 @@ import Foundation
 //MARK:通用错误map协议
 protocol NetCodeMap {
     associatedtype Value
-    func mapCode(url:String?) -> Result<Value, HYNetError>
+    func mapResult(url:String?) -> Result<Value, HYNetError>
     var _hy_Net_code:Int {get}
     var _success_value:Value {get}
 }
 
 extension NetCodeMap {
    
-    func mapCode(url: String?) -> Result<Value, HYNetError> {
+    func mapResult(url: String?) -> Result<Value, HYNetError> {
            if _hy_Net_code == 200 {
             return .success(_success_value)
            }else {
@@ -66,10 +66,13 @@ extension AnyPublisher {
         map { (result) -> Result<T,HYNetError> in
          
             return  result.flatMap { (response) -> Result<T, HYNetError> in
-               
+                 
+                guard let _data = response.data else {
+                    return .failure(HYNetError.decode(HYNetError.DecodeError.emptyData(response: response)))
+                }
                 let decode = JSONDecoder.init()
                 do {
-                    let value = try decode.decode(T.self, from: response.data)
+                    let value = try decode.decode(T.self, from: _data)
                     return .success(value)
                 } catch  {
                     return .failure(HYNetError.decode(.failed(response: response, error: error)))
@@ -85,11 +88,13 @@ extension AnyPublisher {
         map { (result) -> Result<T?,HYNetError> in
          
             return  result.flatMap { (response) -> Result<T?, HYNetError> in
-               
+                guard let _data = response.data else {
+                    return .failure(HYNetError.decode(HYNetError.DecodeError.emptyData(response: response)))
+                }
                 let decode = JSONDecoder.init()
                 do {
-                    let commonValue = try decode.decode(NetPublishCommonCodableResult<T>.self, from: response.data)
-                    switch commonValue.mapCode(url:response.response?.url?.absoluteString ) {
+                    let commonValue = try decode.decode(NetPublishCommonCodableResult<T>.self, from: _data)
+                    switch commonValue.mapResult(url:response.response?.url?.absoluteString ) {
                         case let .success(v):
                             return.success(v)
                         case let .failure(error):

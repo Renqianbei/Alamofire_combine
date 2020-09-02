@@ -15,13 +15,13 @@ enum HYNetError:Error {
     case ResultError(String)
     
     enum DecodeError:Error {
-        case emptyData(request: String?)
+        case emptyData(response:HYRequest.Response?)
         case failed(response:HYRequest.Response?,error:Error)
         
         var localizedDescription: String {
             switch self {
-            case let .emptyData(request):
-                return " request:\(request ?? "") ||| data: 结果为空"
+            case let .emptyData(response):
+                return " request:\(response?.response?.url?.absoluteString ?? "") ||| data: 结果为空"
             case let .failed(response,error):
                 return "request:\(response?.response?.url?.absoluteString ?? "")||| error:\(error.localizedDescription)"
             }

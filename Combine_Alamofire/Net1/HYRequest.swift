@@ -76,7 +76,7 @@ class HYRequest {
     
     
     struct Response {
-        var data:Data
+        var data:Data?
         var response:URLResponse?
     }
     
@@ -89,7 +89,7 @@ class HYRequest {
     
     func requestPublish(request:DataRequest) -> AnyPublisher<Result<Response,HYNetError>,Never> {
         
-        request.publishData().result().map { $0.map { [weak request] in Response.init(data: $0, response: request?.response) }.mapError({HYNetError.init(afError: $0)})
+        request.publishUnserialized().result().map { $0.map { [weak request] in Response.init(data: $0, response: request?.response) }.mapError({HYNetError.init(afError: $0)})
         }.eraseToAnyPublisher()
         
     }
