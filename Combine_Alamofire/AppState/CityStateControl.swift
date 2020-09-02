@@ -51,7 +51,7 @@ class CityStateControl:ObservableObject {
         
         state.loading = .loading
                 
-        CityAPI.cityPublisherNever().sink { (result) in
+        CityAPI.cityPublisherNeverChain().sink { (result) in
             switch result {
                 case let .success(citys):
                     self.state.datas = citys ?? []

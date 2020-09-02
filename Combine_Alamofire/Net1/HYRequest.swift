@@ -70,6 +70,17 @@ class HYRequest {
         
     }
     
+    func requestPublish(requestConvert:URLRequestConvertible) -> AnyPublisher<Result<Data,HYNetError>,Never> {
+        return requestPublish(request: request(requestConvert))
+        
+    }
+    func requestPublish(request:DataRequest) -> AnyPublisher<Result<Data,HYNetError>,Never> {
+        
+        return request.publishData().result().map { $0.mapError { HYNetError(afError: $0)} }.eraseToAnyPublisher()
+        
+    }
+    
+    
     
     
     
@@ -87,3 +98,4 @@ class HYRequest {
 
     
 }
+
