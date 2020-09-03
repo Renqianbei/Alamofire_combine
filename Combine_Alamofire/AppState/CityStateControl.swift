@@ -102,6 +102,12 @@ class CityStateControl:ObservableObject {
         
         netCitys.assign(to: \.datas, on: self) { (end) in
             if  case let .failure(error) = end {
+//                switch error {
+//                case .goToA:
+//                case .goToB
+//                default:
+//                    <#code#>
+//                }
                 self.loading = .tip(error.localizedDescription)
             }else{
                 self.loading = .end

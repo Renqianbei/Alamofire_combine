@@ -11,7 +11,7 @@ import Foundation
 import Alamofire
 
 
-enum CitysLoadError:Error {
+enum CitysLoadOtherAction:Error {
     
     case tip(String)
     case goToA
@@ -69,7 +69,7 @@ extension CityAPI {
     
         //MARK:除去通用码，有额外错误处理
         
-        static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CitysLoadError>,Never> {
+        static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CitysLoadOtherAction>,Never> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
      
             //2.
@@ -78,16 +78,16 @@ extension CityAPI {
             let value1:AnyPublisher<Result<NetPublishCommonCodableResult<[City]?>,HYNetError>,Never> = spark.firePublisherNever().mapCodable()
             
             
-           return value.map { (result) -> Result<[City]?,CitysLoadError> in
-                    result.mapError({ CitysLoadError.tip($0.localizedDescription)})
-                         .flatMap { (cityResult) -> Result<[City]?, CitysLoadError> in
+           return value.map { (result) -> Result<[City]?,CitysLoadOtherAction> in
+                    result.mapError({ CitysLoadOtherAction.tip($0.localizedDescription)})
+                         .flatMap { (cityResult) -> Result<[City]?, CitysLoadOtherAction> in
                             if cityResult.code == 100010 {
-                                return .failure(CitysLoadError.tip("100010的错误"))
+                                return .failure(CitysLoadOtherAction.tip("100010的错误"))
                             }else if cityResult.code == 10000003 {
-                                return .failure(CitysLoadError.goToA)
+                                return .failure(CitysLoadOtherAction.goToA)
                             }
                             else {
-                                return cityResult.mapResult(url: nil).mapError { CitysLoadError.tip($0.localizedDescription) }
+                                return cityResult.mapResult(url: nil).mapError { CitysLoadOtherAction.tip($0.localizedDescription) }
                             }
                         }
                 }.eraseToAnyPublisher()
@@ -97,22 +97,22 @@ extension CityAPI {
         
         
         
-        static func cityPublisherChain4() -> AnyPublisher<[City]?,CitysLoadError> {
+        static func cityPublisherChain4() -> AnyPublisher<[City]?,CitysLoadOtherAction> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
 
             let value:AnyPublisher<CityResultList,HYNetError> = spark.firePublisher().mapCodable()
 
-            return value.mapError({CitysLoadError.tip($0.localizedDescription)})
-                .flatMap { (result) -> AnyPublisher<[City]?, CitysLoadError> in
+            return value.mapError({CitysLoadOtherAction.tip($0.localizedDescription)})
+                .flatMap { (result) -> AnyPublisher<[City]?, CitysLoadOtherAction> in
                    
-                    result.map(url: nil) { (code , citys, result) -> Result<[City]?, CitysLoadError> in
+                    result.map(url: nil) { (code , citys, result) -> Result<[City]?, CitysLoadOtherAction> in
                          if code == 10000002 {
-                            return .failure(CitysLoadError.tip("zidingyi"))
+                            return .failure(CitysLoadOtherAction.tip("zidingyi"))
                         }else if code == 10000003 {
-                            return .failure(CitysLoadError.goToA)
+                            return .failure(CitysLoadOtherAction.goToA)
                         }
                          else {
-                            return result.mapError{CitysLoadError.tip($0.localizedDescription)}
+                            return result.mapError{CitysLoadOtherAction.tip($0.localizedDescription)}
                                           
                         }
                     }.publisher.eraseToAnyPublisher()
@@ -125,19 +125,19 @@ extension CityAPI {
     
 
         //新增通用错误处理，额外扩展
-        static func cityPublisherChain5() -> AnyPublisher<[City]?,CitysLoadError> {
+        static func cityPublisherChain5() -> AnyPublisher<[City]?,CitysLoadOtherAction> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
             
-            return spark.firePublisher().mapValueCodable( { (code, originalValue, commonResult) -> Result<[City]?, CitysLoadError> in
+            return spark.firePublisher().mapValueCodable( { (code, originalValue, commonResult) -> Result<[City]?, CitysLoadOtherAction> in
                 if code == 10000002 {
-                    return .failure(CitysLoadError.tip("zidingyi"))
+                    return .failure(CitysLoadOtherAction.tip("zidingyi"))
                 }else if code == 10000003 {
-                    return .failure(CitysLoadError.goToA)
+                    return .failure(CitysLoadOtherAction.goToA)
                 }
                 else{
-                    return commonResult.mapError{CitysLoadError.tip($0.localizedDescription)}
+                    return commonResult.mapError{CitysLoadOtherAction.tip($0.localizedDescription)}
                 }
-            }) { CitysLoadError.tip($0.localizedDescription)}
+            }) { CitysLoadOtherAction.tip($0.localizedDescription)}
        
         
         }
