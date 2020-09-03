@@ -11,6 +11,22 @@ import Foundation
 import Alamofire
 
 
+enum CitysLoadError:Error {
+    
+    case tip(String)
+    case goToA
+    case goToB
+    var localizedDescription: String {
+        switch self {
+        case let .tip(value):
+            return value
+        default :
+            return "页面跳转"
+        }
+    }
+}
+
+
 extension CityAPI {
     //MARK:4.Publisher 扩展方式 解析 链式codable测试
         
@@ -53,7 +69,7 @@ extension CityAPI {
     
         //MARK:除去通用码，有额外错误处理
         
-        static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CityError>,Never> {
+        static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CitysLoadError>,Never> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
      
             //2.
@@ -62,13 +78,16 @@ extension CityAPI {
             let value1:AnyPublisher<Result<NetPublishCommonCodableResult<[City]?>,HYNetError>,Never> = spark.firePublisherNever().mapCodable()
             
             
-           return value.map { (result) -> Result<[City]?,CityError> in
-                    result.mapError({ CityError.custom($0.localizedDescription)})
-                         .flatMap { (cityResult) -> Result<[City]?, CityError> in
+           return value.map { (result) -> Result<[City]?,CitysLoadError> in
+                    result.mapError({ CitysLoadError.tip($0.localizedDescription)})
+                         .flatMap { (cityResult) -> Result<[City]?, CitysLoadError> in
                             if cityResult.code == 100010 {
-                                return .failure(CityError.custom("100010的错误"))
-                            }else {
-                                return cityResult.mapResult(url: nil).mapError { CityError.custom($0.localizedDescription) }
+                                return .failure(CitysLoadError.tip("100010的错误"))
+                            }else if cityResult.code == 10000003 {
+                                return .failure(CitysLoadError.goToA)
+                            }
+                            else {
+                                return cityResult.mapResult(url: nil).mapError { CitysLoadError.tip($0.localizedDescription) }
                             }
                         }
                 }.eraseToAnyPublisher()
@@ -78,19 +97,22 @@ extension CityAPI {
         
         
         
-        static func cityPublisherChain4() -> AnyPublisher<[City]?,CityError> {
+        static func cityPublisherChain4() -> AnyPublisher<[City]?,CitysLoadError> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
 
             let value:AnyPublisher<CityResultList,HYNetError> = spark.firePublisher().mapCodable()
 
-            return value.mapError({CityError.custom($0.localizedDescription)})
-                .flatMap { (result) -> AnyPublisher<[City]?, CityError> in
+            return value.mapError({CitysLoadError.tip($0.localizedDescription)})
+                .flatMap { (result) -> AnyPublisher<[City]?, CitysLoadError> in
                    
-                    result.map(url: nil) { (code , citys, result) -> Result<[City]?, CityError> in
+                    result.map(url: nil) { (code , citys, result) -> Result<[City]?, CitysLoadError> in
                          if code == 10000002 {
-                            return .failure(CityError.custom("zidingyi"))
-                        }else {
-                            return result.mapError{CityError.custom($0.localizedDescription)}
+                            return .failure(CitysLoadError.tip("zidingyi"))
+                        }else if code == 10000003 {
+                            return .failure(CitysLoadError.goToA)
+                        }
+                         else {
+                            return result.mapError{CitysLoadError.tip($0.localizedDescription)}
                                           
                         }
                     }.publisher.eraseToAnyPublisher()
@@ -103,16 +125,19 @@ extension CityAPI {
     
 
         //新增通用错误处理，额外扩展
-        static func cityPublisherChain5() -> AnyPublisher<[City]?,CityError> {
+        static func cityPublisherChain5() -> AnyPublisher<[City]?,CitysLoadError> {
             let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
             
-            return spark.firePublisher().mapValueCodable( { (code, originalValue, commonResult) -> Result<[City]?, CityError> in
+            return spark.firePublisher().mapValueCodable( { (code, originalValue, commonResult) -> Result<[City]?, CitysLoadError> in
                 if code == 10000002 {
-                    return .failure(CityError.custom("zidingyi"))
-                }else{
-                    return commonResult.mapError{CityError.custom($0.localizedDescription)}
+                    return .failure(CitysLoadError.tip("zidingyi"))
+                }else if code == 10000003 {
+                    return .failure(CitysLoadError.goToA)
                 }
-            }) { CityError.custom($0.localizedDescription)}
+                else{
+                    return commonResult.mapError{CitysLoadError.tip($0.localizedDescription)}
+                }
+            }) { CitysLoadError.tip($0.localizedDescription)}
        
         
         }
@@ -124,7 +149,8 @@ extension CityAPI {
              return spark.firePublisher().mapValueCodable( { (code, originalValue, commonResult) -> Result<[City]?, String> in
                  if code == 10000002 {
                      return .failure("zidingyi")
-                 }else{
+                 }
+                 else{
                      return commonResult.mapError{$0.localizedDescription}
                  }
              }) { $0.localizedDescription}

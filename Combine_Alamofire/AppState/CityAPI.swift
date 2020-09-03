@@ -10,17 +10,6 @@ import Foundation
 import Alamofire
 
 
-enum CityError:Error {
-    
-    case custom(String)
-    
-    var localizedDescription: String {
-        switch self {
-        case let .custom(value):
-            return value
-        }
-    }
-}
 
 
 
