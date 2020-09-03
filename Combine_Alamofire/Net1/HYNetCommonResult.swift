@@ -42,9 +42,9 @@ extension NetCommonCodableResult:HyCodeExplain{
             return .success(data)
         }else {
             if ___requestUrlString?.hasPrefix("特定地址") ?? false {
-                return .failure(HYNetError.ResultError("特定地址 code\(code) 不对"))
+                return .failure(HYNetError.ServerResultError(code: code, msg: msg, mapMsg: "自定义错误\(code)"))
             }else{
-                return .failure(HYNetError.ResultError(" code\(code) 不对"))
+                return .failure(HYNetError.ServerResultError(code: code, msg: msg, mapMsg: "自定义错误\(code)"))
             }
         }
     }

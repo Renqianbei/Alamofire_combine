@@ -9,10 +9,10 @@
 import Combine
 import SwiftUI
 
-struct CityState {
-    var datas = [CityAPI.City]()
-    var loading = Load.end
-}
+//struct  CityState {
+//     var datas:[CityAPI.City]?
+//     var loading = Load.end
+//}
 
 
 
@@ -36,8 +36,9 @@ class CityStateControl:ObservableObject {
     
     private var cancles = [AnyCancellable]()
     
-    
-    @Published var state:CityState = CityState()
+     @Published var datas:[CityAPI.City]?
+     @Published var loading = Load.end
+//    @Published var state:CityState = CityState()
     
     
     func loadCitys() {
@@ -45,12 +46,12 @@ class CityStateControl:ObservableObject {
         print( "地址" + NSHomeDirectory())
         
         
-        if  case .loading =  state.loading  {
+        if  case .loading =  loading  {
             return
         }
         
-        state.loading = .loading
-                
+       loading = .loading
+        /*
         CityAPI.cityPublisherNeverChain().sink { (result) in
             switch result {
                 case let .success(citys):
@@ -60,8 +61,9 @@ class CityStateControl:ObservableObject {
                     self.state.loading = .tip(error.localizedDescription)
             }
         }.store(in: &cancles)
+        */
         
-       /*
+        /*
         let loadPb = CityAPI.cityPublisherNever().share()
         loadPb.map {  result -> [CityAPI.City] in
             switch result {
@@ -70,7 +72,7 @@ class CityStateControl:ObservableObject {
                 case  .failure(_):
                     return []
             }
-            }.assign(to: \.datas, on: self).store(in: &cancles)
+        }.assign(to: \.datas, on: self).store(in: &cancles)
         
         
         
@@ -82,9 +84,30 @@ class CityStateControl:ObservableObject {
                     return .tip(error.localizedDescription)
             }
         }.assign(to: \.loading, on: self).store(in: &cancles)
+      
         */
         
         
+        let netCitys =  CityAPI.cityPublisherChain5()
+//
+//        netCitys.sink(receiveCompletion: { (end) in
+//            if case let .failure(error) = end {
+//                self.loading = .tip(error.localizedDescription)
+//            }
+//        }) { (cs) in
+//            self.datas = cs ?? []
+//            self.loading = .end
+//        }.store(in: &cancles)
+        
+        
+        netCitys.assign(to: \.datas, on: self) { (end) in
+            if  case let .failure(error) = end {
+                self.loading = .tip(error.localizedDescription)
+            }else{
+                self.loading = .end
+            }
+           
+        }.store(in: &cancles)
         
     }
     

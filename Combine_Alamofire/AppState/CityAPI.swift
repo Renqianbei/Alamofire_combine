@@ -22,6 +22,8 @@ enum CityError:Error {
     }
 }
 
+
+
 class CityAPI {
     
     
@@ -145,7 +147,7 @@ class CityAPI {
     
     
     //MARK:3.下载图片 带进度示例
-    static func  cityPic(progressPublish:@escaping (AnyPublisher<CGFloat,Never>)->(),picPublish:(AnyPublisher<Result<Data?,HYNetError>,Never>)->()) {
+    static func  cityPic(progressPublish:@escaping (AnyPublisher<CGFloat,Never>)->(),picPublish:(AnyPublisher<Result<Data,HYNetError>,Never>)->()) {
         
         let spark = HYRequestSpark.init(url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598509173076&di=e12fa01f8157cc9114ccf951e13e2ef6&imgtype=0&src=http%3A%2F%2Fpic.rmb.bdstatic.com%2Fe2ebeb9c8c47d1a31de42756c54d7ac8.jpeg") {   (request: inout URLRequest) in
             request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -155,7 +157,7 @@ class CityAPI {
         progressPublish(pPublish.eraseToAnyPublisher())
         
         
-        let pub = spark.dataRequest().downloadProgress { progress in
+        let dataRequest = spark.dataRequest().downloadProgress { progress in
 //                print( "当前\(progress.completedUnitCount)")
 //                print("总共\(progress.totalUnitCount)")
 //
@@ -166,101 +168,15 @@ class CityAPI {
 //                    print("结束\(progress.totalUnitCount)")
                     pPublish.send(completion: .finished)
                 }
-            }.spark().map { $0.map(\.data)}.eraseToAnyPublisher()
+            }
         
+        let value:AnyPublisher<Result<Data,HYNetError>,Never> = HYRequest.shared.requestPublish(request: dataRequest, serializer: HYNetSerializer<Data>())
         
-        
-        picPublish(pub)
+         picPublish(value)
     }
     
  
     
-    
-//MARK:4.Publisher 扩展方式 解析 链式codable测试
-    
-    
-    
-     static func cityPublisherNeverChain() -> AnyPublisher<Result<[City]?,HYNetError>,Never> {
-        
-        return HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
-        .fire()
-        .mapValueCodable()
-        
-        
-//        return HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
-//            .dataRequest().downloadProgress { (progress) in
-//            print(progress)
-//            }
-//        .spark()
-//        .mapValueCodable()
-        
-        
-        
-        
-    }
-    
-    
-    struct CityResultList:Codable,NetCodeMap {
-        var _hy_Net_code: Int {
-            return code
-        }
-        
-        var _success_value: [CityAPI.City]? {
-            return data
-        }
-        
-        typealias Value = [City]?
-        
-        var code:Int = 0
-        var msg:String = ""
-        var data:[City]?
-    }
-    static func cityPublisherNeverChain2() -> AnyPublisher<Result<[City]?,CityError>,Never> {
-        let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
- 
-        //2.
-        let value:AnyPublisher<Result<CityResultList,HYNetError>,Never> = HYRequest.shared.requestPublish(requestConvert: spark).mapCodable()
-        
-        let value1:AnyPublisher<Result<NetPublishCommonCodableResult<[City]?>,HYNetError>,Never> = HYRequest.shared.requestPublish(requestConvert: spark).mapCodable()
-        
-        
-       return value.map { (result) -> Result<[City]?,CityError> in
-            
-            result.mapError({ CityError.custom($0.localizedDescription)}).flatMap { (cityResult) -> Result<[City]?, CityError> in
-                        if cityResult.code == 100010 {
-                            return .failure(CityError.custom("hello 错误率"))
-                        }else {
-                            return cityResult.mapResult(url: nil).mapError { CityError.custom($0.localizedDescription) }
-                        }
-                    }
-            }.eraseToAnyPublisher()
-        
-        
-    }
-    
-    
-//    static func cityPublisherNeverChain3() -> AnyPublisher<[City]?,CityError> {
-//           let spark = HYRequestSpark.init(url: "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars")
-//    
-//           //2.
-//           let value:AnyPublisher<Result<CityResultList,HYNetError>,Never> = HYRequest.shared.requestPublish(requestConvert: spark).mapCodable()
-//           
-//           let value1:AnyPublisher<Result<NetPublishCommonCodableResult<[City]?>,HYNetError>,Never> = HYRequest.shared.requestPublish(requestConvert: spark).mapCodable()
-//           
-//           
-//          return value.map { (result) -> Result<[City]?,CityError> in
-//               
-//               result.mapError({ CityError.custom($0.localizedDescription)}).flatMap { (cityResult) -> Result<[City]?, CityError> in
-//                           if cityResult.code == 100010 {
-//                               return .failure(CityError.custom("hello 错误率"))
-//                           }else {
-//                               return cityResult.mapResult(url: nil).mapError { CityError.custom($0.localizedDescription) }
-//                           }
-//                       }
-//               }.eraseToAnyPublisher()
-//           
-//           
-//       }
 
     
     

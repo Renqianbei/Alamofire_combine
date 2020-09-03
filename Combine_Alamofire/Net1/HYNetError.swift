@@ -12,7 +12,7 @@ import Foundation
 enum HYNetError:Error {
     
     case AFError(AFError)
-    case ResultError(String)
+    case ServerResultError(code:Int,msg:String,mapMsg:String)
     
     enum DecodeError:Error {
         case emptyData(response:HYRequest.Response?)
@@ -34,7 +34,7 @@ enum HYNetError:Error {
         switch self {
         case let .AFError( value):
             return value.localizedDescription
-        case let .ResultError( value):
+        case let .ServerResultError( _,_,value):
             return value
         case let .decode(value):
             return value.localizedDescription

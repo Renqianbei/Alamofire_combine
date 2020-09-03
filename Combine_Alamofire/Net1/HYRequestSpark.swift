@@ -30,7 +30,10 @@ struct HYRequestSpark:URLRequestConvertible {
 
 extension HYRequestSpark {
     
-    func fire() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+    func firePublisherNever() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+        return HYRequest.shared.requestPublish(requestConvert: self)
+    }
+    func firePublisher() -> AnyPublisher<HYRequest.Response,HYNetError> {
         return HYRequest.shared.requestPublish(requestConvert: self)
     }
     
@@ -42,7 +45,10 @@ extension HYRequestSpark {
 
 extension DataRequest {
     
-    func spark() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+    func firePublisherNever() -> AnyPublisher<Result<HYRequest.Response,HYNetError>,Never> {
+        return HYRequest.shared.requestPublish(request: self)
+    }
+    func firePublisher() -> AnyPublisher<HYRequest.Response,HYNetError> {
         return HYRequest.shared.requestPublish(request: self)
     }
 }

@@ -16,6 +16,7 @@
 		634D161724EF7AC7002E10F0 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634D161624EF7AC7002E10F0 /* RootView.swift */; };
 		636B799824EF895D00F91011 /* CityStateControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636B799724EF895D00F91011 /* CityStateControl.swift */; };
 		636B79DC24EFB13800F91011 /* CityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636B79DB24EFB13800F91011 /* CityDetailView.swift */; };
+		63893F232500EF8B004B0744 /* CityAPI_Style2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63893F222500EF8B004B0744 /* CityAPI_Style2.swift */; };
 		6395025424F6526600FE32E0 /* HYRequestSpark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6395025324F6526600FE32E0 /* HYRequestSpark.swift */; };
 		6395025624F6790100FE32E0 /* CityDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6395025524F6790100FE32E0 /* CityDetail.swift */; };
 		63BD7F7524EBAF6900DB1D19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BD7F7424EBAF6900DB1D19 /* AppDelegate.swift */; };
@@ -38,6 +39,7 @@
 		634D161624EF7AC7002E10F0 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		636B799724EF895D00F91011 /* CityStateControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityStateControl.swift; sourceTree = "<group>"; };
 		636B79DB24EFB13800F91011 /* CityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityDetailView.swift; sourceTree = "<group>"; };
+		63893F222500EF8B004B0744 /* CityAPI_Style2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityAPI_Style2.swift; sourceTree = "<group>"; };
 		6395025324F6526600FE32E0 /* HYRequestSpark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HYRequestSpark.swift; sourceTree = "<group>"; };
 		6395025524F6790100FE32E0 /* CityDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityDetail.swift; sourceTree = "<group>"; };
 		63BD7F7124EBAF6900DB1D19 /* Combine_Alamofire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Combine_Alamofire.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +114,7 @@
 				636B799724EF895D00F91011 /* CityStateControl.swift */,
 				6395025524F6790100FE32E0 /* CityDetail.swift */,
 				63BD800C24ECD86200DB1D19 /* CityAPI.swift */,
+				63893F222500EF8B004B0744 /* CityAPI_Style2.swift */,
 			);
 			path = AppState;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63BD7F7924EBAF6900DB1D19 /* ViewController.swift in Sources */,
+				63893F232500EF8B004B0744 /* CityAPI_Style2.swift in Sources */,
 				636B799824EF895D00F91011 /* CityStateControl.swift in Sources */,
 				63BD7F7524EBAF6900DB1D19 /* AppDelegate.swift in Sources */,
 				6395025624F6790100FE32E0 /* CityDetail.swift in Sources */,

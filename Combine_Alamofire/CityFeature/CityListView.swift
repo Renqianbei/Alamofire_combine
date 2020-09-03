@@ -13,11 +13,11 @@ struct CityListView:View {
     @ObservedObject var cityState:CityStateControl
     
     var datas:[CityAPI.City] {
-        return cityState.state.datas
+        return cityState.datas ?? []
     }
     
     var loading:Load {
-        return cityState.state.loading
+        return cityState.loading
     }
     
     var body: some View  {
