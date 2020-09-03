@@ -26,7 +26,7 @@ class HYRequest {
     
     
     
-    //1:Never
+    //MARK:1.Result,Never
     
     func requestPublish<Serializer:ResponseSerializer>(requestConvert:URLRequestConvertible,serializer:Serializer, interceptor: RequestInterceptor? = nil) -> AnyPublisher<Result<Serializer.SerializedObject.Value,HYNetError>,Never>  where Serializer.SerializedObject : HyCodeExplain  {
            
@@ -46,7 +46,7 @@ class HYRequest {
     
     
     
-    //2:HYNetError
+    //MARK:2. Value,HYNetError
     func requestPublish<Serializer:ResponseSerializer>(requestConvert:URLRequestConvertible,serializer:Serializer, interceptor: RequestInterceptor? = nil) -> AnyPublisher<Serializer.SerializedObject.Value,HYNetError>  where Serializer.SerializedObject : HyCodeExplain  {
         
         return requestPublish(request: request(requestConvert,interceptor: interceptor), serializer: serializer)
@@ -79,8 +79,8 @@ class HYRequest {
         var data:Data?
         var response:URLResponse?
     }
-    
-    //3:
+    //MARK:无解析  返回 response
+    //MARK:3.Never
     func requestPublish(requestConvert:URLRequestConvertible) -> AnyPublisher<Result<Response,HYNetError>,Never> {
         return requestPublish(request: request(requestConvert))
         
@@ -95,6 +95,22 @@ class HYRequest {
     }
     
     
+    
+    //MARK:4.HYNetError
+    func requestPublish(requestConvert:URLRequestConvertible) -> AnyPublisher<Response,HYNetError> {
+        return requestPublish(request: request(requestConvert))
+        
+    }
+    
+    
+    func requestPublish(request:DataRequest) -> AnyPublisher<Response,HYNetError> {
+        
+        request.publishUnserialized()
+            .value()
+            .mapError(HYNetError.init(afError:))
+            .map { [weak request] in Response.init(data: $0, response: request?.response) }
+            .eraseToAnyPublisher()
+    }
     
     
     

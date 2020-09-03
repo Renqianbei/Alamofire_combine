@@ -33,7 +33,7 @@ class CityDetailControl:ObservableObject {
             picPublish.sink { (result) in
                 switch result {
                 case let .success(d):
-                    self.image = UIImage.init(data: d)
+                    self.image = UIImage.init(data: d!)
                 case let .failure(error):
                     self.loading = .tip(error.localizedDescription)
                 }

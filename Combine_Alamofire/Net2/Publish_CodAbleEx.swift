@@ -83,6 +83,27 @@ extension AnyPublisher {
     }
     
     
+    
+    func mapCodable<T:Codable>() -> AnyPublisher<T,HYNetError>  where Failure == HYNetError,Output == HYRequest.Response{
+       
+            flatMap { (response) -> AnyPublisher<T, HYNetError> in
+                 
+                guard let _data = response.data else {
+                    return Fail.init(error: HYNetError.decode(HYNetError.DecodeError.emptyData(response: response))).eraseToAnyPublisher()
+                }
+                let decode = JSONDecoder.init()
+                do {
+                    let value = try decode.decode(T.self, from: _data)
+                    return CurrentValueSubject.init(value).eraseToAnyPublisher()
+                } catch  {
+                    return Fail.init(error:HYNetError.decode(.failed(response: response, error: error))).eraseToAnyPublisher()
+                }
+            }.eraseToAnyPublisher()
+    }
+    
+    
+    
+    
     func mapValueCodable<T:Codable>() -> AnyPublisher<Result<T?,HYNetError>,Never> where Failure == Never,Output == Result<HYRequest.Response,HYNetError> {
         
         map { (result) -> Result<T?,HYNetError> in
@@ -108,4 +129,30 @@ extension AnyPublisher {
         }.eraseToAnyPublisher()
         
     }
+    
+    
+    func mapValueCodable<T:Codable>() -> AnyPublisher<T?,HYNetError> where Failure == HYNetError,Output == HYRequest.Response {
+           
+         flatMap { (response) -> AnyPublisher<T?, HYNetError> in
+                           
+                          guard let _data = response.data else {
+                              return Fail.init(error: HYNetError.decode(HYNetError.DecodeError.emptyData(response: response))).eraseToAnyPublisher()
+                          }
+                          let decode = JSONDecoder.init()
+                          do {
+                              let commonValue = try decode.decode(NetPublishCommonCodableResult<T>.self, from: _data)
+                              switch commonValue.mapResult(url:response.response?.url?.absoluteString ) {
+                                 case let .success(v):
+                                     return CurrentValueSubject.init(v).eraseToAnyPublisher()
+                                 case let .failure(error):
+                                     return Fail.init(error:error).eraseToAnyPublisher()
+                              }
+                              
+                          } catch  {
+                              return Fail.init(error:HYNetError.decode(.failed(response: response, error: error))).eraseToAnyPublisher()
+                          }
+         }.eraseToAnyPublisher()
+           
+       }
+    
 }
