@@ -69,7 +69,7 @@ class CityAPI {
     
         let url = "https://www.fastmock.site/mock/8ef335873e8779ca9accab37b40bf33a/first/cars"
         let spark = HYRequestSpark.init(url: url)
-        return HYRequest.shared.requestPublish(requestConvert: spark, serializer: City.arrayCodableSerializer)
+    return HYRequest.shared.requestPublish(requestConvert: spark, serializer: City.arrayCodableSerializer)
    
     }
     

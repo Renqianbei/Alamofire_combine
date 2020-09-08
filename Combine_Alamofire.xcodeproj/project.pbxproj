@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2CD8F2CC2E48CEFEFEB76E6D /* Pods_Combine_Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91EC797C62B0534A81F7ED61 /* Pods_Combine_Alamofire.framework */; };
 		6308956624F794C200B6608D /* HYNetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6308956524F794C200B6608D /* HYNetError.swift */; };
+		63156D7B250644B4007811CA /* style1.png in Resources */ = {isa = PBXBuildFile; fileRef = 63156D7A250644B4007811CA /* style1.png */; };
+		63156D7D250644B9007811CA /* style2.png in Resources */ = {isa = PBXBuildFile; fileRef = 63156D7C250644B9007811CA /* style2.png */; };
 		63388BEE24EF6FEA00A85318 /* HYNetCommonResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63388BED24EF6FEA00A85318 /* HYNetCommonResult.swift */; };
 		633989D424FF876A00EB954B /* Publish_CodAbleEx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633989D324FF876A00EB954B /* Publish_CodAbleEx.swift */; };
 		634D161124EF75AF002E10F0 /* CityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634D161024EF75AE002E10F0 /* CityListView.swift */; };
@@ -32,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		6308956524F794C200B6608D /* HYNetError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HYNetError.swift; sourceTree = "<group>"; };
+		63156D7A250644B4007811CA /* style1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = style1.png; sourceTree = "<group>"; };
+		63156D7C250644B9007811CA /* style2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = style2.png; sourceTree = "<group>"; };
 		63388BED24EF6FEA00A85318 /* HYNetCommonResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HYNetCommonResult.swift; sourceTree = "<group>"; };
 		633989D324FF876A00EB954B /* Publish_CodAbleEx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publish_CodAbleEx.swift; sourceTree = "<group>"; };
 		634D161024EF75AE002E10F0 /* CityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityListView.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 		63BD7F6824EBAF6900DB1D19 = {
 			isa = PBXGroup;
 			children = (
+				63156D7A250644B4007811CA /* style1.png */,
+				63156D7C250644B9007811CA /* style2.png */,
 				63BD7F7324EBAF6900DB1D19 /* Combine_Alamofire */,
 				63BD7F7224EBAF6900DB1D19 /* Products */,
 				A9AF20A409169DCBF7DC2A68 /* Pods */,
@@ -236,6 +242,8 @@
 				63BD7F8124EBAF6C00DB1D19 /* LaunchScreen.storyboard in Resources */,
 				63BD7F7E24EBAF6C00DB1D19 /* Assets.xcassets in Resources */,
 				63BD7F7C24EBAF6900DB1D19 /* Main.storyboard in Resources */,
+				63156D7D250644B9007811CA /* style2.png in Resources */,
+				63156D7B250644B4007811CA /* style1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
