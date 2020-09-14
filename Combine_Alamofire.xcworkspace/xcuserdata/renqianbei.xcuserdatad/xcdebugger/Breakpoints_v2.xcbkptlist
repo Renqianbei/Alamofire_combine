@@ -308,5 +308,85 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2F3F2541-708D-4F03-8B2E-F80CDF60D285"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Combine_Alamofire/AppState/CityAPI_Style2.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "cityPublisherChain4()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2B464C29-B920-4F9D-B35A-102AA50AA267"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Combine_Alamofire/AppState/CityAPI_Style2.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "cityPublisherNeverChain2()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2B464C29-B920-4F9D-B35A-102AA50AA267 - 531a72755e807b28"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Combine_Alamofire.CityAPI.cityPublisherNeverChain2() -&gt; Combine.AnyPublisher&lt;Swift.Result&lt;Swift.Optional&lt;Swift.Array&lt;Combine_Alamofire.CityAPI.City&gt;&gt;, Combine_Alamofire.CitysLoadOtherAction&gt;, Swift.Never&gt;"
+                  moduleName = "Combine_Alamofire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/renqianbei/Desktop/workFile/Alamofire_combine/Combine_Alamofire/AppState/CityAPI_Style2.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "660">
+               </Location>
+               <Location
+                  uuid = "2B464C29-B920-4F9D-B35A-102AA50AA267 - 83bbed5b67d32a1a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Combine_Alamofire.CityAPI.CityResultList, Combine_Alamofire.HYNetError&gt;) -&gt; Swift.Result&lt;Swift.Optional&lt;Swift.Array&lt;Combine_Alamofire.CityAPI.City&gt;&gt;, Combine_Alamofire.CitysLoadOtherAction&gt; in static Combine_Alamofire.CityAPI.cityPublisherNeverChain2() -&gt; Combine.AnyPublisher&lt;Swift.Result&lt;Swift.Optional&lt;Swift.Array&lt;Combine_Alamofire.CityAPI.City&gt;&gt;, Combine_Alamofire.CitysLoadOtherAction&gt;, Swift.Never&gt;"
+                  moduleName = "Combine_Alamofire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/renqianbei/Desktop/workFile/Alamofire_combine/Combine_Alamofire/AppState/CityAPI_Style2.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "82"
+                  endingLineNumber = "82"
+                  offsetFromSymbolStart = "25">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4AC10188-DA0F-405F-A96A-BCF7629709F5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Combine_Alamofire/AppState/CityAPI_Style2.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "cityPublisherNeverChain2()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

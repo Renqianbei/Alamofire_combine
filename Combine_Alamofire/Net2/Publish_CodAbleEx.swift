@@ -72,15 +72,51 @@ class NetPublishCommonCodableResult<T:Codable>:Codable,NetCodeMap {
 
 
 
+private var cacheSinks = [AnyCancellable]()
 
+extension Publishers {
+    
+    class MYMapPublisher<Upstream,Output>: Publisher where Upstream:Publisher {
+        
+        typealias Failure = Upstream.Failure
+        /// The publisher from which this publisher receives elements.
+        public let upstream: Upstream
+
+        /// The closure that transforms elements from the upstream publisher.
+        public let transform: (Upstream.Output) -> Output
+
+        
+        public init(upstream: Upstream, transform: @escaping (Upstream.Output) -> Output) {
+            self.upstream = upstream
+            self.transform = transform
+            
+        }
+        
+        func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
+            
+            upstream.sink(receiveCompletion: { (completion) in
+                subscriber.receive(completion: completion)
+            }) {
+              let _ = subscriber.receive(self.transform($0))
+            }.store(in: &cacheSinks)
+            
+            
+        }
+        
+    }
+}
 //MARK:Publisher 扩展
 
-extension AnyPublisher  where Failure == Never,Output == Result<HYRequest.Response,HYNetError> {
+extension Publisher  where Failure == Never,Output == Result<HYRequest.Response,HYNetError> {
+    
+    
+    
     
     func mapCodable<T:Codable>() -> AnyPublisher<Result<T,HYNetError>,Never> {
        
-        map { (result) -> Result<T,HYNetError> in
-         
+        
+        let p = Publishers.MYMapPublisher.init(upstream: self) { (result) -> Result<T,HYNetError> in
+            
             return  result.flatMap { (response) -> Result<T, HYNetError> in
                 
                 response.data.map {
@@ -94,8 +130,28 @@ extension AnyPublisher  where Failure == Never,Output == Result<HYRequest.Respon
                 } ?? .failure(HYNetError.decode(HYNetError.DecodeError.emptyData(response: response)))
                 
             }
-            
-        }.eraseToAnyPublisher()
+        }
+        
+        
+        return p.eraseToAnyPublisher()
+        
+//        map { (result) -> Result<T,HYNetError> in
+//
+//            return  result.flatMap { (response) -> Result<T, HYNetError> in
+//
+//                response.data.map {
+//                    let decode = JSONDecoder.init()
+//                    do {
+//                        let value = try decode.decode(T.self, from: $0)
+//                        return .success(value)
+//                    } catch  {
+//                        return .failure(HYNetError.decode(.failed(response: response, error: error)))
+//                    }
+//                } ?? .failure(HYNetError.decode(HYNetError.DecodeError.emptyData(response: response)))
+//
+//            }
+//
+//        }.eraseToAnyPublisher()
     }
     
     
@@ -134,7 +190,7 @@ extension AnyPublisher  where Failure == Never,Output == Result<HYRequest.Respon
 
 
 
-extension AnyPublisher  where Failure == HYNetError,Output == HYRequest.Response {
+extension Publisher  where Failure == HYNetError,Output == HYRequest.Response {
     
   func mapCodable<T:Codable>() -> AnyPublisher<T,HYNetError> {
         
@@ -195,7 +251,7 @@ extension AnyPublisher  where Failure == HYNetError,Output == HYRequest.Response
 }
 
 
-extension AnyPublisher  {
+extension Publisher  {
 
     public func assign<Root>(to keyPath: ReferenceWritableKeyPath<Root, Self.Output>, on object: Root, completion:@escaping (Subscribers.Completion<Failure>)->()) -> AnyCancellable {
         return sink(receiveCompletion: { (end) in

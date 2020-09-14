@@ -51,18 +51,16 @@ class CityStateControl:ObservableObject {
         }
         
        loading = .loading
-        /*
-        CityAPI.cityPublisherNeverChain().sink { (result) in
+        CityAPI.cityPublisherNeverChain2().sink { (result) in
             switch result {
                 case let .success(citys):
-                    self.state.datas = citys ?? []
-                    self.state.loading = .end
+                    self.datas = citys ?? []
+                    self.loading = .end
                 case let .failure(error):
-                    self.state.loading = .tip(error.localizedDescription)
+                    self.loading = .tip(error.localizedDescription)
             }
         }.store(in: &cancles)
-        */
-        
+        return ;
         /*
         let loadPb = CityAPI.cityPublisherNever().share()
         loadPb.map {  result -> [CityAPI.City] in
